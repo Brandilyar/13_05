@@ -1,12 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
+import os
 
-payload = {'text':"ozon", 'lr':"159"}
+
+region_kod = input("Введите код региона: ")
+text_search = input("Введите текст поиска: ")
+
+payload = {'text':text_search, 'lr':region_kod}
 
 r = requests.get("https://yandex.ru/search/", params=payload)
-# print(r.text)
+
 soup = BeautifulSoup(r.text, 'html.parser')
-print(soup.prettify())
+
+
 with open("result.txt", "a") as file:
     for link in soup.find_all("a"):
-        file.write(link.get("href")+'\n')
+        if link.get('href').startswith('https://'):
+            file.write(link.get("href")+'\n')
